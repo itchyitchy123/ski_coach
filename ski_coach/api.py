@@ -8,7 +8,7 @@ from __future__ import annotations
 from typing import Any
 
 from .demo import demo_frames
-from .io import frames_from_dict, sensor_samples_from_dict
+from .io import frames_from_dict, sensor_samples_from_dict, gps_points_from_dict
 from .pipeline import analyze_landmarks
 
 try:
@@ -35,6 +35,7 @@ def analyze(payload: dict[str, Any]) -> dict[str, Any]:
             terrain=context.get("terrain", "groomer"),
             exercise=context.get("exercise", "parallel turns"),
             sensor_samples=sensor_samples_from_dict(payload.get("sensors", {})) if payload.get("sensors") else None,
+            gps_points=gps_points_from_dict(payload.get("gps", {})) if payload.get("gps") else None,
         )
         return report.to_dict()
     except (TypeError, ValueError, KeyError) as exc:

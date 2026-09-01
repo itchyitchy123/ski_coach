@@ -1,0 +1,8 @@
+{
+  "points": [
+    {"timestamp": 0, "latitude": 46.800000, "longitude": 8.000000, "altitude": 1800, "speed": 0},
+    {"timestamp": 60, "latitude": 46.801000, "longitude": 8.000000, "altitude": 1900, "speed": 5},
+    {"timestamp": 120, "latitude": 46.803000, "longitude": 8.000000, "altitude": 1600, "speed": 10},
+    {"timestamp": 180, "latitude": 46.804000, "longitude": 8.001000, "altitude": 1600, "speed": 0}
+  ]
+}

@@ -83,6 +83,8 @@ The pose layer is replaceable. Scoring consumes plain landmark dataclasses, so r
 
 The engine accepts device-neutral timestamped sensor samples (`acceleration`, `rotation_rate`, optional GPS speed, altitude, and heart rate). Pass them to the CLI with `--sensors examples/sensors.json`; the report will include `sensor_fusion` agreement and boundary error. This is offline comparison only for now—native Apple Watch/Wear OS capture comes after the video pipeline is validated.
 
+GPS session summaries are available with `--gps examples/gps.json`. The tracker reports distance, vertical descent, top/average run speed, stopped/lift/run time, and classified segments. This is the foundation for Slopes-style day summaries; map tiles, resort metadata, and background mobile recording come later.
+
 ## Known MVP limitations
 
 - One skier and a static, downhill/front-view camera only

@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 from .demo import demo_frames
-from .io import load_frames, load_sensor_samples
+from .io import load_frames, load_sensor_samples, load_gps_points
 from .evaluation import evaluate_report
 from .overlay import render_pose_overlay
 from .batch import evaluate_dataset
@@ -27,6 +27,7 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--overlay-output", help="write a review video with pose landmarks (requires --video)")
     result.add_argument("--labels", help="instructor labels JSON to evaluate predicted turns")
     result.add_argument("--sensors", help="timestamped sensor JSON to compare with video turns")
+    result.add_argument("--gps", help="timestamped GPS JSON to summarize the ski session")
     return result
 
 
@@ -51,7 +52,8 @@ def main() -> None:
     else:
         frames = extract_video_landmarks(args.video, args.model)
     sensor_samples = load_sensor_samples(args.sensors) if args.sensors else None
-    report = analyze_landmarks(frames, level=args.level, terrain=args.terrain, exercise=args.exercise, sensor_samples=sensor_samples)
+    gps_points = load_gps_points(args.gps) if args.gps else None
+    report = analyze_landmarks(frames, level=args.level, terrain=args.terrain, exercise=args.exercise, sensor_samples=sensor_samples, gps_points=gps_points)
     result = report.to_dict()
     if args.overlay_output:
         if not args.video:

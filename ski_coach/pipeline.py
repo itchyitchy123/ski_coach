@@ -5,6 +5,7 @@ from .metrics import frame_metrics
 from .models import AnalysisReport, PoseFrame
 from .quality import assess_quality
 from .sensors import SensorSample, summarize_fusion
+from .tracking import GPSPoint, summarize_track
 from .scoring import report_scores, score_turn
 from .turns import segment_turns
 
@@ -13,6 +14,7 @@ def analyze_landmarks(
     frames: list[PoseFrame], *, level: str = "intermediate", terrain: str = "groomer",
     exercise: str = "parallel turns",
     sensor_samples: list[SensorSample] | None = None,
+    gps_points: list[GPSPoint] | None = None,
 ) -> AnalysisReport:
     metrics = [m for frame in frames if (m := frame_metrics(frame)) is not None]
     groups = segment_turns(metrics)
@@ -24,12 +26,14 @@ def analyze_landmarks(
     feedback, warnings = make_feedback(turns, confidence)
     warnings = quality_summary.warnings + warnings
     fusion = summarize_fusion(turns, sensor_samples) if sensor_samples else {"available": False}
+    tracking = summarize_track(gps_points).to_dict() if gps_points else {"available": False}
     return AnalysisReport(
         turns=len(turns), overall_score=overall, balance_score=balance,
         symmetry_score=symmetry, upper_body_score=upper, rhythm_score=rhythm,
         confidence=confidence, data_quality=quality,
         quality_breakdown={"pose_coverage": quality_summary.pose_coverage, "framing": quality_summary.framing, "single_subject": quality_summary.single_subject},
         sensor_fusion=fusion,
+        session_tracking=tracking,
         context={"level": level, "terrain": terrain, "exercise": exercise},
         turns_analysis=turns, feedback=feedback, warnings=warnings,
     )

@@ -6,6 +6,7 @@ from ski_coach.pipeline import analyze_landmarks
 from ski_coach.evaluation import evaluate_report, validate_labels
 from ski_coach.batch import evaluate_dataset
 from ski_coach.sensors import SensorSample, align_timestamps, detect_sensor_turns
+from ski_coach.tracking import GPSPoint, summarize_track
 
 
 def test_right_angle():
@@ -84,3 +85,17 @@ def test_sensor_turn_detection_and_alignment():
     samples = [SensorSample(i / 10, rotation_rate=(0, 0, .5 if i < 6 else -.5)) for i in range(12)]
     assert len(detect_sensor_turns(samples, minimum_duration=.4)) == 2
     assert align_timestamps(samples, .25)[0].timestamp == .25
+
+
+def test_gps_track_classifies_lift_run_and_stop():
+    points = [
+        GPSPoint(0, 46.8, 8.0, 1800, 0),
+        GPSPoint(60, 46.801, 8.0, 1900, 5),
+        GPSPoint(120, 46.803, 8.0, 1600, 10),
+        GPSPoint(180, 46.804, 8.001, 1600, 0),
+    ]
+    summary = summarize_track(points)
+    assert summary.runs == 1
+    assert summary.lifts == 1
+    assert summary.stopped_seconds == 60
+    assert summary.vertical_descent_m == 300

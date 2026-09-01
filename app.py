@@ -11,6 +11,7 @@ from ski_coach.demo import demo_frames
 from ski_coach.pipeline import analyze_landmarks
 from ski_coach.pose import extract_video_landmarks
 from ski_coach.overlay import render_pose_overlay
+from ski_coach.io import gps_points_from_dict
 
 st.set_page_config(page_title="Ski Coach", page_icon="⛷️", layout="wide")
 st.title("Ski Coach")
@@ -22,6 +23,7 @@ with st.sidebar:
     terrain = st.selectbox("Terrain", ["groomer", "moguls", "powder", "steeps"])
     exercise = st.selectbox("Exercise", ["parallel turns", "carving", "short radius", "balance"])
     mode = st.radio("Input", ["Demo", "Upload video"])
+    gps_upload = st.file_uploader("Optional GPS JSON", type=["json"])
     model_path = st.text_input("Pose model path", "models/pose_landmarker_lite.task", disabled=mode == "Demo")
 
 uploaded = None
@@ -46,7 +48,8 @@ if run:
                     render_pose_overlay(handle.name, frames, overlay_file.name)
                     st.subheader("Pose review")
                     st.video(overlay_file.name)
-            report = analyze_landmarks(frames, level=level, terrain=terrain, exercise=exercise)
+            gps_points = gps_points_from_dict(json.load(gps_upload)) if gps_upload else None
+            report = analyze_landmarks(frames, level=level, terrain=terrain, exercise=exercise, gps_points=gps_points)
         cols = st.columns(5)
         for col, label, value in zip(cols, ["Overall", "Balance", "Symmetry", "Upper body", "Rhythm"], [report.overall_score, report.balance_score, report.symmetry_score, report.upper_body_score, report.rhythm_score]):
             col.metric(label, f"{value}/100")

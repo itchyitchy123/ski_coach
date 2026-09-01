@@ -60,6 +60,7 @@ class AnalysisReport:
     data_quality: int
     quality_breakdown: dict[str, int]
     sensor_fusion: dict[str, object]
+    session_tracking: dict[str, object]
     context: dict[str, str]
     turns_analysis: list[TurnAnalysis]
     feedback: list[str]

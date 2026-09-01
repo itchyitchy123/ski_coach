@@ -8,6 +8,7 @@ from typing import Any
 
 from .models import Landmark, PoseFrame
 from .sensors import SensorSample
+from .tracking import GPSPoint
 
 
 def frames_from_dict(payload: dict[str, Any]) -> list[PoseFrame]:
@@ -58,3 +59,19 @@ def sensor_samples_from_dict(payload: dict) -> list[SensorSample]:
     if not isinstance(values, list):
         raise ValueError("sensor payload must contain a 'samples' list")
     return _sensor_samples(values)
+
+
+def load_gps_points(path: str | Path) -> list[GPSPoint]:
+    with Path(path).open(encoding="utf-8") as handle:
+        payload = json.load(handle)
+    values = payload.get("points", payload) if isinstance(payload, dict) else payload
+    if not isinstance(values, list):
+        raise ValueError("GPS payload must contain a 'points' list")
+    return gps_points_from_dict({"points": values})
+
+
+def gps_points_from_dict(payload: dict) -> list[GPSPoint]:
+    values = payload.get("points", [])
+    if not isinstance(values, list):
+        raise ValueError("GPS payload must contain a 'points' list")
+    return [GPSPoint(float(item["timestamp"]), float(item["latitude"]), float(item["longitude"]), float(item["altitude"]) if item.get("altitude") is not None else None, float(item["speed"]) if item.get("speed") is not None else None) for item in values]
