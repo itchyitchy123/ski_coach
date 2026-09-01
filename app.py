@@ -10,6 +10,7 @@ import streamlit as st
 from ski_coach.demo import demo_frames
 from ski_coach.pipeline import analyze_landmarks
 from ski_coach.pose import extract_video_landmarks
+from ski_coach.overlay import render_pose_overlay
 
 st.set_page_config(page_title="Ski Coach", page_icon="⛷️", layout="wide")
 st.title("Ski Coach")
@@ -40,6 +41,11 @@ if run:
                     handle.write(uploaded.getbuffer())
                     handle.flush()
                     frames = extract_video_landmarks(handle.name, model_path)
+                    overlay_file = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
+                    overlay_file.close()
+                    render_pose_overlay(handle.name, frames, overlay_file.name)
+                    st.subheader("Pose review")
+                    st.video(overlay_file.name)
             report = analyze_landmarks(frames, level=level, terrain=terrain, exercise=exercise)
         cols = st.columns(5)
         for col, label, value in zip(cols, ["Overall", "Balance", "Symmetry", "Upper body", "Rhythm"], [report.overall_score, report.balance_score, report.symmetry_score, report.upper_body_score, report.rhythm_score]):

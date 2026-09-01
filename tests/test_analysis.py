@@ -3,7 +3,7 @@ from ski_coach.geometry import angle
 from ski_coach.io import frames_from_dict
 from ski_coach.models import Landmark, PoseFrame
 from ski_coach.pipeline import analyze_landmarks
-from ski_coach.evaluation import evaluate_report
+from ski_coach.evaluation import evaluate_report, validate_labels
 
 
 def test_right_angle():
@@ -43,3 +43,12 @@ def test_evaluation_compares_labels():
     result = evaluate_report(report, labels)
     assert result.direction_accuracy == 1.0
     assert result.count_error == 0
+
+
+def test_invalid_labels_are_rejected():
+    try:
+        validate_labels({"turns": [{"direction": "left", "start_time": 2, "end_time": 1}]})
+    except ValueError as exc:
+        assert "invalid" in str(exc)
+    else:
+        raise AssertionError("invalid labels should fail validation")
