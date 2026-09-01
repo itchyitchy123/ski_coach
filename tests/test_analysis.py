@@ -4,6 +4,7 @@ from ski_coach.io import frames_from_dict
 from ski_coach.models import Landmark, PoseFrame
 from ski_coach.pipeline import analyze_landmarks
 from ski_coach.evaluation import evaluate_report, validate_labels
+from ski_coach.batch import evaluate_dataset
 
 
 def test_right_angle():
@@ -52,3 +53,16 @@ def test_invalid_labels_are_rejected():
         assert "invalid" in str(exc)
     else:
         raise AssertionError("invalid labels should fail validation")
+
+
+def test_batch_runner_processes_landmark_fixture(tmp_path):
+    clip = tmp_path / "clip-001"
+    clip.mkdir()
+    import json
+    (clip / "landmarks.json").write_text(json.dumps({"frames": [
+        {"timestamp": frame.timestamp, "landmarks": {name: {"x": point.x, "y": point.y, "visibility": point.visibility} for name, point in frame.landmarks.items()}}
+        for frame in demo_frames()
+    ]}), encoding="utf-8")
+    result = evaluate_dataset(tmp_path)
+    assert result.completed == 1
+    assert result.failed == 0

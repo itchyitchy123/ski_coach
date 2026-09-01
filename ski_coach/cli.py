@@ -8,6 +8,7 @@ from .demo import demo_frames
 from .io import load_frames
 from .evaluation import evaluate_report
 from .overlay import render_pose_overlay
+from .batch import evaluate_dataset
 from .pipeline import analyze_landmarks
 from .pose import extract_video_landmarks
 
@@ -18,6 +19,7 @@ def parser() -> argparse.ArgumentParser:
     source.add_argument("--demo", action="store_true", help="run with synthetic demo landmarks")
     source.add_argument("--video", help="path to MP4/MOV ski video")
     source.add_argument("--landmarks", help="JSON landmark sequence (useful for mobile clients)")
+    source.add_argument("--dataset", help="directory of clip folders for batch evaluation")
     result.add_argument("--model", help="path to pose_landmarker.task (required with --video)")
     result.add_argument("--level", choices=["beginner", "intermediate", "advanced", "expert"], default="intermediate")
     result.add_argument("--terrain", choices=["groomer", "moguls", "powder", "steeps"], default="groomer")
@@ -29,6 +31,16 @@ def parser() -> argparse.ArgumentParser:
 
 def main() -> None:
     args = parser().parse_args()
+    if args.dataset:
+        if args.overlay_output or args.labels:
+            parser().error("--dataset cannot be combined with per-run --labels or --overlay-output")
+        if not args.model:
+            # A dataset may contain landmarks.json fixtures and need no model.
+            model = None
+        else:
+            model = args.model
+        print(json.dumps(evaluate_dataset(args.dataset, model).to_dict(), indent=2))
+        return
     if args.video and not args.model:
         parser().error("--model is required with --video")
     if args.demo:
