@@ -1,0 +1,6 @@
+{
+  "samples": [
+    {"timestamp": 0.0, "rotation_rate": [0, 0, 0.4], "speed": 8.2, "heart_rate": 138},
+    {"timestamp": 1.0, "rotation_rate": [0, 0, -0.4], "speed": 8.4, "heart_rate": 141}
+  ]
+}

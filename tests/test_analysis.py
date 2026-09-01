@@ -5,6 +5,7 @@ from ski_coach.models import Landmark, PoseFrame
 from ski_coach.pipeline import analyze_landmarks
 from ski_coach.evaluation import evaluate_report, validate_labels
 from ski_coach.batch import evaluate_dataset
+from ski_coach.sensors import SensorSample, align_timestamps, detect_sensor_turns
 
 
 def test_right_angle():
@@ -77,3 +78,9 @@ def test_batch_runner_processes_landmark_fixture(tmp_path):
     result = evaluate_dataset(tmp_path)
     assert result.completed == 1
     assert result.failed == 0
+
+
+def test_sensor_turn_detection_and_alignment():
+    samples = [SensorSample(i / 10, rotation_rate=(0, 0, .5 if i < 6 else -.5)) for i in range(12)]
+    assert len(detect_sensor_turns(samples, minimum_duration=.4)) == 2
+    assert align_timestamps(samples, .25)[0].timestamp == .25

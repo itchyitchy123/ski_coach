@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from .models import Landmark, PoseFrame
+from .sensors import SensorSample
 
 
 def frames_from_dict(payload: dict[str, Any]) -> list[PoseFrame]:
@@ -29,3 +30,31 @@ def frames_from_dict(payload: dict[str, Any]) -> list[PoseFrame]:
 def load_frames(path: str | Path) -> list[PoseFrame]:
     with Path(path).open(encoding="utf-8") as handle:
         return frames_from_dict(json.load(handle))
+
+
+def load_sensor_samples(path: str | Path) -> list[SensorSample]:
+    with Path(path).open(encoding="utf-8") as handle:
+        payload = json.load(handle)
+    values = payload.get("samples", payload) if isinstance(payload, dict) else payload
+    if not isinstance(values, list):
+        raise ValueError("sensor payload must contain a 'samples' list")
+    return _sensor_samples(values)
+
+
+def _sensor_samples(values: list[dict]) -> list[SensorSample]:
+    return [SensorSample(
+        timestamp=float(item["timestamp"]),
+        acceleration=tuple(float(v) for v in item.get("acceleration", (0, 0, 0))),
+        rotation_rate=tuple(float(v) for v in item.get("rotation_rate", (0, 0, 0))),
+        speed=float(item["speed"]) if item.get("speed") is not None else None,
+        altitude=float(item["altitude"]) if item.get("altitude") is not None else None,
+        heart_rate=float(item["heart_rate"]) if item.get("heart_rate") is not None else None,
+    ) for item in values]
+
+
+def sensor_samples_from_dict(payload: dict) -> list[SensorSample]:
+    """Parse the same sensor schema from an API request."""
+    values = payload.get("samples", [])
+    if not isinstance(values, list):
+        raise ValueError("sensor payload must contain a 'samples' list")
+    return _sensor_samples(values)

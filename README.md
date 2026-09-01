@@ -79,6 +79,10 @@ video -> pose.py -> metrics.py -> turns.py -> scoring.py -> feedback.py
 
 The pose layer is replaceable. Scoring consumes plain landmark dataclasses, so rules and future instructor-trained models can be tested without MediaPipe or video files.
 
+## Wearable sensor input
+
+The engine accepts device-neutral timestamped sensor samples (`acceleration`, `rotation_rate`, optional GPS speed, altitude, and heart rate). Pass them to the CLI with `--sensors examples/sensors.json`; the report will include `sensor_fusion` agreement and boundary error. This is offline comparison only for now—native Apple Watch/Wear OS capture comes after the video pipeline is validated.
+
 ## Known MVP limitations
 
 - One skier and a static, downhill/front-view camera only

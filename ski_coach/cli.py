@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 from .demo import demo_frames
-from .io import load_frames
+from .io import load_frames, load_sensor_samples
 from .evaluation import evaluate_report
 from .overlay import render_pose_overlay
 from .batch import evaluate_dataset
@@ -26,6 +26,7 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--exercise", choices=["parallel turns", "carving", "short radius", "balance"], default="parallel turns")
     result.add_argument("--overlay-output", help="write a review video with pose landmarks (requires --video)")
     result.add_argument("--labels", help="instructor labels JSON to evaluate predicted turns")
+    result.add_argument("--sensors", help="timestamped sensor JSON to compare with video turns")
     return result
 
 
@@ -49,7 +50,8 @@ def main() -> None:
         frames = load_frames(args.landmarks)
     else:
         frames = extract_video_landmarks(args.video, args.model)
-    report = analyze_landmarks(frames, level=args.level, terrain=args.terrain, exercise=args.exercise)
+    sensor_samples = load_sensor_samples(args.sensors) if args.sensors else None
+    report = analyze_landmarks(frames, level=args.level, terrain=args.terrain, exercise=args.exercise, sensor_samples=sensor_samples)
     result = report.to_dict()
     if args.overlay_output:
         if not args.video:
