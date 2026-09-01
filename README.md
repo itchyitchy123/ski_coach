@@ -16,7 +16,7 @@ Scores are heuristic coaching signals, not objective technique grades. Terrain a
 ## Quick start (demo—no video model needed)
 
 ```bash
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
 pip install -e '.[ui,dev]'
 streamlit run app.py
@@ -27,6 +27,25 @@ Choose **Demo**, then **Analyze run**. Or use the JSON CLI:
 ```bash
 ski-coach --demo
 pytest
+```
+
+## API boundary
+
+The same engine is available as a small HTTP service for a future phone app:
+
+```bash
+pip install -e '.[api]'
+uvicorn ski_coach.api:app --reload
+curl http://localhost:8000/demo
+```
+
+Mobile clients can POST normalized pose frames to `/analyze/landmarks`. The payload format is intentionally simple and versionable:
+
+```json
+{
+  "context": {"level": "intermediate", "terrain": "groomer", "exercise": "parallel turns"},
+  "frames": [{"timestamp": 0.0, "landmarks": {"left_hip": {"x": 0.4, "y": 0.5, "visibility": 0.9}}}]
+}
 ```
 
 ## Analyze a real video
