@@ -30,11 +30,17 @@ def segment_turns(
             start = i
     groups.append(frames[start:])
 
-    result: list[tuple[str, list[FrameMetrics]]] = []
+    # Merge brief sign flips caused by landmark jitter before applying duration.
+    merged: list[list[FrameMetrics]] = []
     for group in groups:
+        if merged and group[-1].timestamp - group[0].timestamp < minimum_duration * .35:
+            merged[-1].extend(group)
+        else:
+            merged.append(group)
+    result: list[tuple[str, list[FrameMetrics]]] = []
+    for group in merged:
         duration = group[-1].timestamp - group[0].timestamp
         if duration >= minimum_duration:
             direction = "left" if mean(f.balance_offset for f in group) < 0 else "right"
             result.append((direction, group))
     return result
-

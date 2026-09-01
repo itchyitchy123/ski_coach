@@ -3,6 +3,7 @@ from ski_coach.geometry import angle
 from ski_coach.io import frames_from_dict
 from ski_coach.models import Landmark, PoseFrame
 from ski_coach.pipeline import analyze_landmarks
+from ski_coach.evaluation import evaluate_report
 
 
 def test_right_angle():
@@ -34,3 +35,11 @@ def test_quality_breakdown_is_exposed():
     report = analyze_landmarks(demo_frames())
     assert report.data_quality == 100
     assert report.quality_breakdown["single_subject"] == 100
+
+
+def test_evaluation_compares_labels():
+    report = analyze_landmarks(demo_frames())
+    labels = {"turns": [{"direction": turn.direction, "score": turn.score} for turn in report.turns_analysis]}
+    result = evaluate_report(report, labels)
+    assert result.direction_accuracy == 1.0
+    assert result.count_error == 0

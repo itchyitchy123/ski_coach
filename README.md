@@ -90,4 +90,8 @@ The pose layer is replaceable. Scoring consumes plain landmark dataclasses, so r
 - data-quality is a visibility/pose-coverage signal, not a measure of skiing ability
 
 Every report includes a quality breakdown for pose coverage, full-body framing, and single-subject confidence. These checks are separate from technique scores so poor footage cannot masquerade as poor skiing.
+
+## Instructor review loop
+
+Copy `examples/labels.json` for each clip and record turn directions/timing plus an optional instructor score. Evaluate a run with `--labels labels.json`; add `--overlay-output reviewed.mp4` to export a video with the detected pose landmarks for review. This is the path from heuristics to instructor-calibrated scoring.
 - data-quality is a visibility/pose-coverage signal, not a measure of skiing ability

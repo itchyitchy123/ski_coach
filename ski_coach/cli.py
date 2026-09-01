@@ -2,9 +2,12 @@ from __future__ import annotations
 
 import argparse
 import json
+from pathlib import Path
 
 from .demo import demo_frames
 from .io import load_frames
+from .evaluation import evaluate_report
+from .overlay import render_pose_overlay
 from .pipeline import analyze_landmarks
 from .pose import extract_video_landmarks
 
@@ -19,6 +22,8 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--level", choices=["beginner", "intermediate", "advanced", "expert"], default="intermediate")
     result.add_argument("--terrain", choices=["groomer", "moguls", "powder", "steeps"], default="groomer")
     result.add_argument("--exercise", choices=["parallel turns", "carving", "short radius", "balance"], default="parallel turns")
+    result.add_argument("--overlay-output", help="write a review video with pose landmarks (requires --video)")
+    result.add_argument("--labels", help="instructor labels JSON to evaluate predicted turns")
     return result
 
 
@@ -33,7 +38,16 @@ def main() -> None:
     else:
         frames = extract_video_landmarks(args.video, args.model)
     report = analyze_landmarks(frames, level=args.level, terrain=args.terrain, exercise=args.exercise)
-    print(json.dumps(report.to_dict(), indent=2))
+    result = report.to_dict()
+    if args.overlay_output:
+        if not args.video:
+            parser().error("--overlay-output requires --video")
+        render_pose_overlay(args.video, frames, Path(args.overlay_output))
+        result["overlay_output"] = args.overlay_output
+    if args.labels:
+        with Path(args.labels).open(encoding="utf-8") as handle:
+            result["evaluation"] = evaluate_report(report, json.load(handle)).to_dict()
+    print(json.dumps(result, indent=2))
 
 
 if __name__ == "__main__":
