@@ -19,6 +19,6 @@ Once clips are present, run the whole study with:
 ski-coach --dataset datasets/validation --model models/pose_landmarker_lite.task > validation-report.json
 ```
 
-Each clip can contain `landmarks.json` instead of a video, which is useful for replaying exported pose data without rerunning pose extraction. The batch report includes completed/failed clips and aggregate direction, count, and score errors.
+Each clip can contain `landmarks.json` instead of a video, which is useful for replaying exported pose data without rerunning pose extraction. The batch report includes completed/failed clips and aggregate direction, count, score, and turn-boundary timing errors.
 
 Never commit identifiable video, names, or contact information. The repository's evaluation command compares a report to labels without uploading either file.

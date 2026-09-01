@@ -46,6 +46,17 @@ def test_evaluation_compares_labels():
     assert result.count_error == 0
 
 
+def test_evaluation_reports_timing_error():
+    report = analyze_landmarks(demo_frames())
+    turn = report.turns_analysis[0]
+    labels = {"turns": [{"direction": turn.direction, "start_time": turn.start_time + .1, "end_time": turn.end_time + .2}]}
+    result = evaluate_report(report, labels)
+    assert result.matched_turns == 1
+    assert result.mean_start_error == .1
+    assert result.mean_end_error == .2
+    assert result.mean_timing_error == .15
+
+
 def test_invalid_labels_are_rejected():
     try:
         validate_labels({"turns": [{"direction": "left", "start_time": 2, "end_time": 1}]})

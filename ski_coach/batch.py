@@ -6,7 +6,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
-from .evaluation import EvaluationResult, evaluate_report
+from .evaluation import evaluate_report
 from .io import load_frames
 from .pipeline import analyze_landmarks
 from .pose import extract_video_landmarks
@@ -29,6 +29,7 @@ class DatasetResult:
     mean_direction_accuracy: float | None
     mean_count_error: float | None
     mean_score_error: float | None
+    mean_timing_error: float | None
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -85,5 +86,5 @@ def evaluate_dataset(root: str | Path, model_path: str | Path | None = None) -> 
         clips=clips, completed=len(completed), failed=len(clips) - len(completed),
         mean_direction_accuracy=average("direction_accuracy"),
         mean_count_error=average("count_error"), mean_score_error=average("mean_score_error"),
+        mean_timing_error=average("mean_timing_error"),
     )
-
