@@ -28,3 +28,9 @@ def test_json_boundary_round_trips_landmarks():
     frames = frames_from_dict({"frames": [{"timestamp": 1, "landmarks": {"left_hip": {"x": .2, "y": .3}}}]})
     assert frames[0].timestamp == 1
     assert frames[0].landmarks["left_hip"].x == .2
+
+
+def test_quality_breakdown_is_exposed():
+    report = analyze_landmarks(demo_frames())
+    assert report.data_quality == 100
+    assert report.quality_breakdown["single_subject"] == 100

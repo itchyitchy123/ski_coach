@@ -22,11 +22,10 @@ def frames_from_dict(payload: dict[str, Any]) -> list[PoseFrame]:
             name: Landmark(float(value["x"]), float(value["y"]), float(value.get("visibility", 1.0)))
             for name, value in raw_landmarks.items()
         }
-        frames.append(PoseFrame(float(item["timestamp"]), landmarks))
+        frames.append(PoseFrame(float(item["timestamp"]), landmarks, int(item.get("pose_count", 1))))
     return frames
 
 
 def load_frames(path: str | Path) -> list[PoseFrame]:
     with Path(path).open(encoding="utf-8") as handle:
         return frames_from_dict(json.load(handle))
-

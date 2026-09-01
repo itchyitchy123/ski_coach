@@ -58,9 +58,8 @@ def extract_video_landmarks(
                             name: Landmark(pose[index].x, pose[index].y, pose[index].visibility or 0.0)
                             for index, name in LANDMARK_NAMES.items()
                         }
-                        output.append(PoseFrame(timestamp_ms / 1000, landmarks))
+                        output.append(PoseFrame(timestamp_ms / 1000, landmarks, pose_count=len(result.pose_landmarks)))
                 frame_index += 1
     finally:
         capture.release()
     return output
-

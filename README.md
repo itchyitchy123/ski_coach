@@ -88,3 +88,6 @@ The pose layer is replaceable. Scoring consumes plain landmark dataclasses, so r
 - no instructor-labelled calibration yet
 - video is processed locally and is not retained by the app
 - data-quality is a visibility/pose-coverage signal, not a measure of skiing ability
+
+Every report includes a quality breakdown for pose coverage, full-body framing, and single-subject confidence. These checks are separate from technique scores so poor footage cannot masquerade as poor skiing.
+- data-quality is a visibility/pose-coverage signal, not a measure of skiing ability

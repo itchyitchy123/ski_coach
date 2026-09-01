@@ -17,6 +17,7 @@ class Landmark:
 class PoseFrame:
     timestamp: float
     landmarks: dict[str, Landmark]
+    pose_count: int = 1
 
 
 @dataclass(frozen=True)
@@ -57,6 +58,7 @@ class AnalysisReport:
     rhythm_score: int
     confidence: int
     data_quality: int
+    quality_breakdown: dict[str, int]
     context: dict[str, str]
     turns_analysis: list[TurnAnalysis]
     feedback: list[str]
