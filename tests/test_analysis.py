@@ -1,0 +1,24 @@
+from ski_coach.demo import demo_frames
+from ski_coach.geometry import angle
+from ski_coach.models import Landmark, PoseFrame
+from ski_coach.pipeline import analyze_landmarks
+
+
+def test_right_angle():
+    assert angle(Landmark(0, 1), Landmark(0, 0), Landmark(1, 0)) == 90
+
+
+def test_demo_produces_alternating_turns_and_scores():
+    report = analyze_landmarks(demo_frames())
+    assert report.turns >= 8
+    assert {turn.direction for turn in report.turns_analysis} == {"left", "right"}
+    assert 0 <= report.overall_score <= 100
+    assert report.confidence == 94
+    assert report.feedback
+
+
+def test_missing_landmarks_yields_actionable_warning():
+    report = analyze_landmarks([PoseFrame(0, {})])
+    assert report.turns == 0
+    assert "No complete turns" in report.warnings[-1]
+
