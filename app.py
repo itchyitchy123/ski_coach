@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import tempfile
+import json
 from pathlib import Path
 
 import pandas as pd
@@ -43,7 +44,7 @@ if run:
         cols = st.columns(5)
         for col, label, value in zip(cols, ["Overall", "Balance", "Symmetry", "Upper body", "Rhythm"], [report.overall_score, report.balance_score, report.symmetry_score, report.upper_body_score, report.rhythm_score]):
             col.metric(label, f"{value}/100")
-        st.caption(f"Pose confidence: {report.confidence}% · {report.turns} complete turns")
+        st.caption(f"Pose confidence: {report.confidence}% · Data quality: {report.data_quality}% · {report.turns} complete turns")
         st.subheader("Coach's notes")
         for note in report.feedback:
             st.write(f"• {note}")
@@ -54,6 +55,6 @@ if run:
             table = pd.DataFrame([vars(turn) for turn in report.turns_analysis])
             st.dataframe(table, hide_index=True, use_container_width=True)
             st.line_chart(table.set_index("turn")[["score", "knee_flex", "torso_angle"]])
+        st.download_button("Download JSON report", json.dumps(report.to_dict(), indent=2), "ski-coach-report.json", "application/json")
     except Exception as exc:
         st.error(str(exc))
-

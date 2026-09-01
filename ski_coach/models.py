@@ -56,6 +56,7 @@ class AnalysisReport:
     upper_body_score: int
     rhythm_score: int
     confidence: int
+    data_quality: int
     context: dict[str, str]
     turns_analysis: list[TurnAnalysis]
     feedback: list[str]
@@ -63,4 +64,3 @@ class AnalysisReport:
 
     def to_dict(self) -> dict:
         return asdict(self)
-

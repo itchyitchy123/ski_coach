@@ -1,0 +1,7 @@
+{
+  "context": {"level": "intermediate", "terrain": "groomer", "exercise": "parallel turns"},
+  "frames": [
+    {"timestamp": 0.0, "landmarks": {}},
+    {"timestamp": 0.1, "landmarks": {"left_shoulder": {"x": 0.44, "y": 0.28}, "right_shoulder": {"x": 0.56, "y": 0.28}, "left_hip": {"x": 0.45, "y": 0.49}, "right_hip": {"x": 0.54, "y": 0.49}, "left_knee": {"x": 0.46, "y": 0.68}, "right_knee": {"x": 0.54, "y": 0.68}, "left_ankle": {"x": 0.44, "y": 0.89}, "right_ankle": {"x": 0.56, "y": 0.89}}}
+  ]
+}

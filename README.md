@@ -51,12 +51,20 @@ Mobile clients can POST normalized pose frames to `/analyze/landmarks`. The payl
 ## Analyze a real video
 
 1. Download Google's [Pose Landmarker Lite model](https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/latest/pose_landmarker_lite.task) into `models/`. The model is deliberately not committed because it is a separate binary artifact.
+
+   Or run `python3 scripts/download_pose_model.py`.
 2. Record 6–10 linked turns with the full skier visible, a steady camera, and a downhill/front view.
 3. In the UI choose **Upload video**, or run:
 
 ```bash
 ski-coach --video run.mp4 --model models/pose_landmarker_lite.task \
   --level intermediate --terrain groomer --exercise "parallel turns"
+```
+
+For integration testing without a video, analyze the checked-in fixture:
+
+```bash
+ski-coach --landmarks examples/landmarks.json
 ```
 
 Google's [current Python Pose Landmarker API](https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker/python) requires monotonically increasing timestamps in video mode; the extractor samples frames while retaining their original video timestamps.
@@ -79,3 +87,4 @@ The pose layer is replaceable. Scoring consumes plain landmark dataclasses, so r
 - no IMU/GPS import yet
 - no instructor-labelled calibration yet
 - video is processed locally and is not retained by the app
+- data-quality is a visibility/pose-coverage signal, not a measure of skiing ability
