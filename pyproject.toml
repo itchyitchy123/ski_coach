@@ -20,9 +20,9 @@ classifiers = [
 dependencies = []
 
 [project.optional-dependencies]
-video = ["mediapipe>=0.10,<0.11", "opencv-python-headless>=4.10,<5"]
+video = ["mediapipe>=0.10,<1.1", "opencv-python-headless>=4.10,<5"]
 ui = [
-    "mediapipe>=0.10,<0.11",
+    "mediapipe>=0.10,<1.1",
     "opencv-python-headless>=4.10,<5",
     "streamlit>=1.40,<2",
     "pandas>=2.2,<3",
