@@ -1,0 +1,20 @@
+{
+  "source": "EPFL Ski 2DPose",
+  "source_video_id": "qxfgw1Kd98A",
+  "source_url": "https://www.youtube.com/watch?v=qxfgw1Kd98A",
+  "license_review_required": true,
+  "type": "Slalom",
+  "location": "Granada, Spain",
+  "weather": "Foggy, Sunny",
+  "camera_view": {
+    "front_view": false,
+    "side_view": true,
+    "back_view": true,
+    "start_time_stamp": "00:01:06.586",
+    "end_time_stamp": "00:01:07.870",
+    "delta_t": "00:00:01.284"
+  },
+  "skier_level": "unknown",
+  "terrain": "groomer",
+  "exercise": "parallel turns"
+}

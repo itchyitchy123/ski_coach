@@ -39,6 +39,8 @@ def test_quality_breakdown_is_exposed():
     report = analyze_landmarks(demo_frames())
     assert report.data_quality == 100
     assert report.quality_breakdown["single_subject"] == 100
+    assert report.recommendations
+    assert report.recommendations[0]["drill"]
 
 
 def test_evaluation_compares_labels():

@@ -8,6 +8,7 @@ from .sensors import SensorSample, summarize_fusion
 from .tracking import GPSPoint, summarize_track
 from .scoring import report_scores, score_turn
 from .turns import segment_turns
+from .training import recommendations
 
 
 def analyze_landmarks(
@@ -25,6 +26,8 @@ def analyze_landmarks(
     overall, balance, symmetry, upper, rhythm = report_scores(turns)
     feedback, warnings = make_feedback(turns, confidence)
     warnings = quality_summary.warnings + warnings
+    if quality < 50 and turns:
+        warnings.insert(0, "Evidence is too limited for a dependable technique score; retake the run with the full skier visible and a steadier camera.")
     fusion = summarize_fusion(turns, sensor_samples) if sensor_samples else {"available": False}
     tracking = summarize_track(gps_points).to_dict() if gps_points else {"available": False}
     return AnalysisReport(
@@ -36,4 +39,5 @@ def analyze_landmarks(
         session_tracking=tracking,
         context={"level": level, "terrain": terrain, "exercise": exercise},
         turns_analysis=turns, feedback=feedback, warnings=warnings,
+        recommendations=recommendations(turns, confidence, quality),
     )

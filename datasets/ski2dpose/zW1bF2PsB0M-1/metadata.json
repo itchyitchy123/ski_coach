@@ -1,0 +1,20 @@
+{
+  "source": "EPFL Ski 2DPose",
+  "source_video_id": "zW1bF2PsB0M",
+  "source_url": "https://www.youtube.com/watch?v=zW1bF2PsB0M",
+  "license_review_required": true,
+  "type": "Super G",
+  "location": "Almaty, Kazakhstan",
+  "weather": "Sunny, Shadows",
+  "camera_view": {
+    "front_view": true,
+    "side_view": true,
+    "back_view": false,
+    "start_time_stamp": "00:01:07.003",
+    "end_time_stamp": "00:01:11.404",
+    "delta_t": "00:00:04.401"
+  },
+  "skier_level": "unknown",
+  "terrain": "groomer",
+  "exercise": "parallel turns"
+}

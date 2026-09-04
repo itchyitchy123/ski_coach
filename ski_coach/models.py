@@ -65,6 +65,7 @@ class AnalysisReport:
     turns_analysis: list[TurnAnalysis]
     feedback: list[str]
     warnings: list[str]
+    recommendations: list[dict[str, object]]
 
     def to_dict(self) -> dict:
         return asdict(self)

@@ -1,0 +1,20 @@
+{
+  "source": "EPFL Ski 2DPose",
+  "source_video_id": "5UHRvqx1iuQ",
+  "source_url": "https://www.youtube.com/watch?v=5UHRvqx1iuQ",
+  "license_review_required": true,
+  "type": "Slalom",
+  "location": "Almaty, Kazakhstan",
+  "weather": "Sunny",
+  "camera_view": {
+    "front_view": true,
+    "side_view": false,
+    "back_view": false,
+    "start_time_stamp": "00:00:35.809",
+    "end_time_stamp": "00:00:46.523",
+    "delta_t": "00:00:10.714"
+  },
+  "skier_level": "unknown",
+  "terrain": "groomer",
+  "exercise": "parallel turns"
+}

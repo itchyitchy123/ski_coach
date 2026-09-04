@@ -13,20 +13,19 @@ def make_feedback(turns: list[TurnAnalysis], confidence: int) -> tuple[list[str]
     right = [t for t in turns if t.direction == "right"]
     rotation = mean(t.upper_body_rotation for t in turns)
     if rotation > 18:
-        feedback.append("Keep your shoulders quieter and facing more consistently downhill.")
+        feedback.append("Keep your shoulders quieter and facing downhill; try looking toward the next turn while your hips follow your skis.")
     else:
-        feedback.append("Upper-body separation stays consistent through most turns.")
+        feedback.append("Upper-body separation stays consistent; keep this feeling while you increase edge angle gradually.")
     if left and right:
         left_knee, right_knee = mean(t.knee_flex for t in left), mean(t.knee_flex for t in right)
         if abs(left_knee - right_knee) > 10:
             stiffer = "left" if left_knee > right_knee else "right"
-            feedback.append(f"Your {stiffer} turns are noticeably less flexed; match the movement range of the other side.")
+            feedback.append(f"Your {stiffer} turns are noticeably less flexed; match the movement range of the other side by flexing smoothly into the turn and extending through release.")
         else:
-            feedback.append("Left/right knee flexion is well matched.")
+            feedback.append("Left/right knee flexion is well matched; use one easy run to keep that same range in every turn.")
     if mean(t.stance_ratio for t in turns) > 1.35:
-        feedback.append("Your stance reads wide relative to your shoulders; try a slightly narrower platform.")
+        feedback.append("Your stance reads wide relative to your shoulders; try a slightly narrower platform and keep both skis moving together.")
     if confidence < 65:
         warnings.append("Low pose confidence: treat scores as directional, not definitive.")
     warnings.append("Coaching aid only—scores do not certify safety or readiness for harder terrain.")
     return feedback[:3], warnings
-

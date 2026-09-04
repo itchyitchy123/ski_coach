@@ -1,0 +1,20 @@
+{
+  "source": "EPFL Ski 2DPose",
+  "source_video_id": "oKQFABiOTw8",
+  "source_url": "https://www.youtube.com/watch?v=oKQFABiOTw8",
+  "license_review_required": true,
+  "type": "Giant Slalom",
+  "location": "Almaty, Kazakhstan",
+  "weather": "Foggy, Sunny",
+  "camera_view": {
+    "front_view": false,
+    "side_view": true,
+    "back_view": false,
+    "start_time_stamp": "00:00:20.527",
+    "end_time_stamp": "00:00:21.106",
+    "delta_t": "00:00:00.579"
+  },
+  "skier_level": "unknown",
+  "terrain": "groomer",
+  "exercise": "parallel turns"
+}

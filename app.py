@@ -17,6 +17,9 @@ st.set_page_config(page_title="Ski Coach", page_icon="⛷️", layout="wide")
 st.title("Ski Coach")
 st.caption("Turn-by-turn technique feedback from a steady downhill/front-view video")
 
+if "session_history" not in st.session_state:
+    st.session_state.session_history = []
+
 with st.sidebar:
     st.header("Session")
     level = st.selectbox("Skill level", ["beginner", "intermediate", "advanced", "expert"], index=1)
@@ -25,6 +28,14 @@ with st.sidebar:
     mode = st.radio("Input", ["Demo", "Upload video"])
     gps_upload = st.file_uploader("Optional GPS JSON", type=["json"])
     model_path = st.text_input("Pose model path", "models/pose_landmarker_lite.task", disabled=mode == "Demo")
+    if st.session_state.session_history:
+        st.divider()
+        st.subheader("This session")
+        for item in reversed(st.session_state.session_history[-5:]):
+            st.caption(f"{item['label']}: {item['score']}/100 · {item['turns']} turns · quality {item['quality']}%")
+        if st.button("Clear session history"):
+            st.session_state.session_history = []
+            st.rerun()
 
 uploaded = None
 if mode == "Upload video":
@@ -56,6 +67,12 @@ if run:
                         Path(overlay_file.name).unlink(missing_ok=True)
             gps_points = gps_points_from_dict(json.load(gps_upload)) if gps_upload else None
             report = analyze_landmarks(frames, level=level, terrain=terrain, exercise=exercise, gps_points=gps_points)
+        st.session_state.session_history.append({
+            "label": f"{terrain} · {exercise}",
+            "score": report.overall_score,
+            "turns": report.turns,
+            "quality": report.data_quality,
+        })
         cols = st.columns(5)
         for col, label, value in zip(cols, ["Overall", "Balance", "Symmetry", "Upper body", "Rhythm"], [report.overall_score, report.balance_score, report.symmetry_score, report.upper_body_score, report.rhythm_score]):
             col.metric(label, f"{value}/100")
@@ -63,6 +80,13 @@ if run:
         st.subheader("Coach's notes")
         for note in report.feedback:
             st.write(f"• {note}")
+        if report.feedback:
+            st.info("Next-run focus: choose one coaching note above and repeat the run while tracking only that movement.")
+        st.subheader("Next-run training plan")
+        for item in report.recommendations:
+            st.markdown(f"**{item['title']}** · {item['focus']} · {item['priority']} priority")
+            st.write(item["drill"])
+            st.caption(f"Success signal: {item['success_signal']}")
         for warning in report.warnings:
             st.warning(warning)
         if report.turns_analysis:

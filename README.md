@@ -1,4 +1,4 @@
-# Ski Coach MVP
+# Ski Coach
 
 A Python-first prototype that extracts body landmarks from ski video, detects alternating turns, compares left and right movement, and generates confidence-aware coaching cues.
 
@@ -9,7 +9,8 @@ A Python-first prototype that extracts body landmarks from ski video, detects al
 - turn segmentation for steady downhill/front-view footage
 - turn, rhythm, symmetry, balance, and upper-body scores
 - skill-level context and explicit low-confidence/safety warnings
-- a Streamlit UI, JSON CLI, synthetic demo, and unit tests
+- a Streamlit UI, JSON CLI, synthetic demo, imported research fixtures, and unit tests
+- structured next-run training plans with drills and measurable success signals
 
 Scores are heuristic coaching signals, not objective technique grades. Terrain and exercise are captured now for the product workflow; only skill level changes thresholds in this first version. Instructor-labelled calibration is the next major milestone.
 
@@ -36,7 +37,7 @@ The same engine is available as a small HTTP service for a future phone app:
 ```bash
 pip install -e '.[api]'
 uvicorn ski_coach.api:app --reload
-curl http://localhost:8000/demo
+curl http://localhost:8000/health
 ```
 
 Mobile clients can POST normalized pose frames to `/v1/analyze/landmarks`. The payload format is intentionally simple and versionable:
@@ -94,7 +95,7 @@ GPS session summaries are available with `--gps examples/gps.json`. The tracker 
 - One skier and a static, downhill/front-view camera only
 - 2D projection can confuse true joint motion with camera angle
 - turns are inferred from lateral hip movement relative to the feet
-- no IMU/GPS import yet
+- sensor and GPS import is offline only; live device capture is not implemented
 - no instructor-labelled calibration yet
 - video is processed locally and is not retained by the app
 - data-quality is a visibility/pose-coverage signal, not a measure of skiing ability
@@ -106,4 +107,11 @@ Every report includes a quality breakdown for pose coverage, full-body framing, 
 Copy `examples/labels.json` for each clip and record turn directions/timing plus an optional instructor score. Evaluate a run with `--labels labels.json`; add `--overlay-output reviewed.mp4` to export a video with the detected pose landmarks for review. This is the path from heuristics to instructor-calibrated scoring.
 
 See [datasets/README.md](datasets/README.md) for the recommended validation-study layout and privacy rules. Uploaded-video review in the Streamlit app now includes the same pose overlay.
+
+## Repository guides
+
+- [Changelog](CHANGELOG.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security policy](SECURITY.md)
+- [Production deployment notes](docs/production.md)
 - data-quality is a visibility/pose-coverage signal, not a measure of skiing ability

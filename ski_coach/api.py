@@ -100,7 +100,18 @@ def analyze(payload: AnalyzeRequest, request: Request) -> dict[str, Any]:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
+@app.post("/analyze/landmarks", include_in_schema=False)
+def analyze_legacy(payload: AnalyzeRequest, request: Request) -> dict[str, Any]:
+    """Compatibility route for clients using the original MVP endpoint."""
+    return analyze(payload, request)
+
+
 @app.get("/v1/demo")
 def demo(request: Request) -> dict[str, Any]:
     _authorize(request)
     return analyze_landmarks(demo_frames()).to_dict()
+
+
+@app.get("/demo", include_in_schema=False)
+def demo_legacy(request: Request) -> dict[str, Any]:
+    return demo(request)
