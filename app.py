@@ -38,6 +38,9 @@ if run:
             if mode == "Demo":
                 frames = demo_frames()
             else:
+                max_upload_bytes = 200 * 1024 * 1024
+                if uploaded.size > max_upload_bytes:
+                    raise ValueError("Video is too large; maximum supported upload size is 200 MB.")
                 suffix = Path(uploaded.name).suffix
                 with tempfile.NamedTemporaryFile(suffix=suffix) as handle:
                     handle.write(uploaded.getbuffer())
@@ -45,9 +48,12 @@ if run:
                     frames = extract_video_landmarks(handle.name, model_path)
                     overlay_file = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
                     overlay_file.close()
-                    render_pose_overlay(handle.name, frames, overlay_file.name)
-                    st.subheader("Pose review")
-                    st.video(overlay_file.name)
+                    try:
+                        render_pose_overlay(handle.name, frames, overlay_file.name)
+                        st.subheader("Pose review")
+                        st.video(overlay_file.name)
+                    finally:
+                        Path(overlay_file.name).unlink(missing_ok=True)
             gps_points = gps_points_from_dict(json.load(gps_upload)) if gps_upload else None
             report = analyze_landmarks(frames, level=level, terrain=terrain, exercise=exercise, gps_points=gps_points)
         cols = st.columns(5)

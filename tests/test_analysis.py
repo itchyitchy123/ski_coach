@@ -7,6 +7,7 @@ from ski_coach.evaluation import evaluate_report, validate_labels
 from ski_coach.batch import evaluate_dataset
 from ski_coach.sensors import SensorSample, align_timestamps, detect_sensor_turns
 from ski_coach.tracking import GPSPoint, summarize_track
+import pytest
 
 
 def test_right_angle():
@@ -99,3 +100,20 @@ def test_gps_track_classifies_lift_run_and_stop():
     assert summary.lifts == 1
     assert summary.stopped_seconds == 60
     assert summary.vertical_descent_m == 300
+
+
+def test_json_boundary_rejects_non_finite_and_unordered_timestamps():
+    with pytest.raises(ValueError, match="finite"):
+        frames_from_dict({"frames": [{"timestamp": "nan", "landmarks": {}}]})
+    with pytest.raises(ValueError, match="ordered"):
+        frames_from_dict({"frames": [
+            {"timestamp": 1, "landmarks": {}},
+            {"timestamp": 0, "landmarks": {}},
+        ]})
+
+
+def test_json_boundary_rejects_invalid_visibility_and_coordinates():
+    with pytest.raises(ValueError, match="visibility"):
+        frames_from_dict({"frames": [{"timestamp": 0, "landmarks": {
+            "left_hip": {"x": 0.5, "y": 0.5, "visibility": 2},
+        }}]})

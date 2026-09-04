@@ -14,6 +14,8 @@ def extract_video_landmarks(
     video_path: str | Path, model_path: str | Path, sample_fps: float = 10.0,
 ) -> list[PoseFrame]:
     """Extract one skier's landmarks using MediaPipe Pose Landmarker video mode."""
+    if sample_fps <= 0:
+        raise ValueError("sample_fps must be greater than zero")
     try:
         import cv2
         import mediapipe as mp

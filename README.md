@@ -39,7 +39,7 @@ uvicorn ski_coach.api:app --reload
 curl http://localhost:8000/demo
 ```
 
-Mobile clients can POST normalized pose frames to `/analyze/landmarks`. The payload format is intentionally simple and versionable:
+Mobile clients can POST normalized pose frames to `/v1/analyze/landmarks`. The payload format is intentionally simple and versionable:
 
 ```json
 {
@@ -47,6 +47,10 @@ Mobile clients can POST normalized pose frames to `/analyze/landmarks`. The payl
   "frames": [{"timestamp": 0.0, "landmarks": {"left_hip": {"x": 0.4, "y": 0.5, "visibility": 0.9}}}]
 }
 ```
+
+For deployments, use the versioned `/v1/analyze/landmarks` and `/v1/demo` endpoints. Set `SKI_COACH_API_KEY` before exposing the service beyond a trusted local network; clients send it in the `X-API-Key` header. The service also applies configurable request-size and per-client rate limits. See `.env.example` and the included `Dockerfile`.
+
+The in-process rate limiter is suitable for a single worker only. A multi-worker or multi-instance deployment should move rate limiting and job state to shared infrastructure and place the API behind TLS, an authenticated gateway, and a queue-backed worker service. Video analysis remains synchronous in this MVP and should be moved to background jobs before accepting long-running or high-volume workloads.
 
 ## Analyze a real video
 

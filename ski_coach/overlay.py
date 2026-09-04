@@ -16,7 +16,13 @@ def render_pose_overlay(video_path: str | Path, frames: list[PoseFrame], output_
         raise ValueError(f"Could not open video: {video_path}")
     fps = capture.get(cv2.CAP_PROP_FPS) or 30.0
     width, height = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH)), int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    if width <= 0 or height <= 0:
+        capture.release()
+        raise ValueError(f"Could not determine video dimensions: {video_path}")
     writer = cv2.VideoWriter(str(output_path), cv2.VideoWriter_fourcc(*"mp4v"), fps, (width, height))
+    if not writer.isOpened():
+        capture.release()
+        raise OSError(f"Could not create overlay video: {output_path}")
     by_time = {round(frame.timestamp, 2): frame for frame in frames}
     index = 0
     try:
@@ -36,4 +42,3 @@ def render_pose_overlay(video_path: str | Path, frames: list[PoseFrame], output_
     finally:
         capture.release()
         writer.release()
-
